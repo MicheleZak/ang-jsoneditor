@@ -1,10 +1,23 @@
 import {
-  Component, ElementRef, Input, OnInit, OnDestroy, ViewChild,
-  Output, EventEmitter, forwardRef, ChangeDetectionStrategy
+  Component,
+  ElementRef,
+  Input,
+  OnInit,
+  OnDestroy,
+  ViewChild,
+  Output,
+  EventEmitter,
+  forwardRef,
+  ChangeDetectionStrategy,
 } from '@angular/core';
-import JSONEditor from "jsoneditor";
+import JSONEditor from 'jsoneditor';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { JsonEditorOptions, JsonEditorMode, JsonEditorTreeNode, IError } from './jsoneditoroptions';
+import {
+  JsonEditorOptions,
+  JsonEditorMode,
+  JsonEditorTreeNode,
+  IError,
+} from './jsoneditoroptions';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -14,14 +27,15 @@ import { JsonEditorOptions, JsonEditorMode, JsonEditorTreeNode, IError } from '.
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => JsonEditorComponent),
-      multi: true
-    }
+      multi: true,
+    },
   ],
   preserveWhitespaces: false,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-
-export class JsonEditorComponent implements ControlValueAccessor, OnInit, OnDestroy {
+export class JsonEditorComponent
+  implements ControlValueAccessor, OnInit, OnDestroy
+{
   private editor: any;
   public id = 'angjsoneditor' + Math.floor(Math.random() * 1000000);
   disabled = false;
@@ -29,7 +43,8 @@ export class JsonEditorComponent implements ControlValueAccessor, OnInit, OnDest
 
   public optionsChanged = false;
 
-  @ViewChild('jsonEditorContainer', { static: true }) jsonEditorContainer: ElementRef;
+  @ViewChild('jsonEditorContainer', { static: true })
+  jsonEditorContainer: ElementRef;
 
   private _data: Object = {};
 
@@ -49,9 +64,7 @@ export class JsonEditorComponent implements ControlValueAccessor, OnInit, OnDest
   @Output()
   jsonChange: EventEmitter<any> = new EventEmitter<any>();
 
-  constructor() {
-  }
-
+  constructor() {}
 
   ngOnInit() {
     let optionsBefore = this.options;
@@ -79,7 +92,11 @@ export class JsonEditorComponent implements ControlValueAccessor, OnInit, OnDest
     if (optionsCopy.mode === 'text' || optionsCopy.mode === 'code') {
       optionsCopy.onChangeJSON = null;
     }
-    this.editor = new JSONEditor(this.jsonEditorContainer.nativeElement, optionsCopy, this._data);
+    this.editor = new JSONEditor(
+      this.jsonEditorContainer.nativeElement,
+      optionsCopy,
+      this._data
+    );
 
     if (this.options.expandAll) {
       this.editor.expandAll();
@@ -89,7 +106,6 @@ export class JsonEditorComponent implements ControlValueAccessor, OnInit, OnDest
   ngOnDestroy() {
     this.destroy();
   }
-
 
   /**
    * ngModel
@@ -117,12 +133,10 @@ export class JsonEditorComponent implements ControlValueAccessor, OnInit, OnDest
   }
 
   // Implemented as part of ControlValueAccessor.
-  private onTouched = () => {
-  };
+  private onTouched = () => {};
 
   // Implemented as part of ControlValueAccessor.
-  private onChangeModel = (e) => {
-  };
+  private onChangeModel = (e) => {};
 
   public onChange(e) {
     if (this.editor) {
@@ -131,8 +145,17 @@ export class JsonEditorComponent implements ControlValueAccessor, OnInit, OnDest
         this.onChangeModel(json);
         this.change.emit(json);
       } catch (e) {
+        const text = this.editor.getText();
+        this.onChangeModel(text);
+        this.change.emit(text);
+
         if (this.debug) {
-          console.log(e);
+          // prettier-ignore
+          console.warn('There is an error getting json content, probably the content is empty and thus not valid');
+          // prettier-ignore
+          console.warn('We are anyway triggering the event but with plain text value');
+          console.warn('==============> Error: ');
+          console.error(e);
         }
       }
     }
@@ -143,13 +166,20 @@ export class JsonEditorComponent implements ControlValueAccessor, OnInit, OnDest
       try {
         this.jsonChange.emit(this.editor.get());
       } catch (e) {
+        const text = this.editor.getText();
+        this.jsonChange.emit(text);
+
         if (this.debug) {
-          console.log(e);
+          // prettier-ignore
+          console.warn('There is an error getting json content, probably the content is empty and thus not valid');
+          // prettier-ignore
+          console.warn('We are anyway triggering the event but with plain text value');
+          console.warn('==============> Error: ');
+          console.error(e);
         }
       }
     }
   }
-
 
   /**
    * JSON EDITOR FUNCTIONS
@@ -232,7 +262,7 @@ export class JsonEditorComponent implements ControlValueAccessor, OnInit, OnDest
     this.editor?.destroy();
   }
 
-  public getEditor(){
+  public getEditor() {
     return this.editor;
   }
 

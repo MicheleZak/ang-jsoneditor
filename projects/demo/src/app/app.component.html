@@ -11,25 +11,31 @@
 <h3>Live Reload</h3>
 <button (click)="changeData()">New Data</button>
 <!-- <button (click)="changeObject()">Change Data</button> -->
-Random Number: {{data.randomNumber}}
+Random Number: {{ data.randomNumber }}
 
 <h3>Custom Options</h3>
 <button (click)="setAce()">Customize Ace</button>
 <button (click)="toggleNav()">Navigation Bar</button>
 <button (click)="toggleStatus()">Status Bar</button>
 
-
 <hr />
 
-<h3 *ngIf="editorOptions.language">Force Language to {{editorOptions.language}}</h3>
+<h3 *ngIf="editorOptions.language">
+  Force Language to {{ editorOptions.language }}
+</h3>
 
 <h3>Example with (change)</h3>
-<div style="height:600px;">
-    <json-editor [options]="editorOptions" (jsonChange)="changeLog($event)" [data]="data" #editor></json-editor>
+<div style="height: 600px">
+  <json-editor
+    [options]="editorOptions"
+    (change)="changeLog($event)"
+    (jsonChange)="changeLog($event)"
+    [data]="data"
+    [debug]="true"
+    #editor
+  ></json-editor>
   <app-show [data]="showData"></app-show>
 </div>
-
-
 
 <!--<h3>Using options and data variable </h3>-->
 
@@ -44,7 +50,6 @@ Random Number: {{data.randomNumber}}
 <!--  </form>-->
 <!--</div>-->
 
-
 <!--<h2>Multi json in a loop</h2>-->
 <!--<button (click)="show=!show">Show/Hide Json Editors</button>-->
 <!--<div *ngIf="show === true">-->
@@ -52,7 +57,6 @@ Random Number: {{data.randomNumber}}
 <!--    <json-editor [options]="makeOptions()" [data]="prd" (change)="showJson($event)" ></json-editor>-->
 <!--  </div>-->
 <!--</div>-->
-
 
 <!--<table>-->
 <!--  <tr>-->
